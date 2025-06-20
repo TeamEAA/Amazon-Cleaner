@@ -15,6 +15,12 @@ let level = parseInt(localStorage.getItem("level") || "1");
 let glowAlpha = 0;
 let glowTimeout = null;
 
+// ボタンの描画位置とサイズ（判定に使う）
+let buttonX = 0;
+let buttonY = 0;
+let buttonW = 0;
+let buttonH = 0;
+
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -25,9 +31,11 @@ function drawScene() {
   if (!bgImage.complete || !buttonImage.complete || !titleImage.complete) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 背景全体表示
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // タイトル画像（比率を維持して中央上部）
+  // タイトル画像（比率維持）
   const titleMaxWidth = canvas.width * 0.8;
   const titleRatio = titleImage.width / titleImage.height;
   const titleWidth = Math.min(titleMaxWidth, 600);
@@ -36,38 +44,38 @@ function drawScene() {
   const titleY = 20;
   ctx.drawImage(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-  // レベル表示（タイトル画像の下）
+  // レベル表示（タイトルの下）
   ctx.font = "bold 48px sans-serif";
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
   ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 60);
 
-  // ボタン描画（中央、比率維持）
-  const baseSize = Math.min(canvas.width, canvas.height) / 3;
+  // ボタン画像（比率維持して中央）
+  const buttonMaxSize = Math.min(canvas.width, canvas.height) / 2;
   const buttonRatio = buttonImage.width / buttonImage.height;
-  let btnW = baseSize;
-  let btnH = baseSize;
   if (buttonRatio > 1) {
-    btnH = baseSize / buttonRatio;
+    buttonW = buttonMaxSize;
+    buttonH = buttonW / buttonRatio;
   } else {
-    btnW = baseSize * buttonRatio;
+    buttonH = buttonMaxSize;
+    buttonW = buttonH * buttonRatio;
   }
 
-  const buttonX = canvas.width / 2 - btnW / 2;
-  const buttonY = canvas.height / 2 - btnH / 2;
+  buttonX = (canvas.width - buttonW) / 2;
+  buttonY = (canvas.height - buttonH) / 2;
 
   // 発光エフェクト
   if (glowAlpha > 0) {
     ctx.save();
     ctx.globalAlpha = glowAlpha;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, baseSize / 1.5, 0, 2 * Math.PI);
+    ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(buttonW, buttonH) / 1.5, 0, 2 * Math.PI);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.restore();
   }
 
-  ctx.drawImage(buttonImage, buttonX, buttonY, btnW, btnH);
+  ctx.drawImage(buttonImage, buttonX, buttonY, buttonW, buttonH);
 }
 
 canvas.addEventListener("click", (e) => {
@@ -75,13 +83,13 @@ canvas.addEventListener("click", (e) => {
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
 
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+  const cx = buttonX + buttonW / 2;
+  const cy = buttonY + buttonH / 2;
   const dx = mx - cx;
   const dy = my - cy;
   const distance = Math.sqrt(dx * dx + dy * dy);
+  const radius = Math.min(buttonW, buttonH) / 2;
 
-  const radius = Math.min(canvas.width, canvas.height) / 6;
   if (distance <= radius) {
     sound.currentTime = 0;
     sound.play();
