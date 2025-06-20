@@ -1,3 +1,4 @@
+// script.js
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const sound = document.getElementById("levelupSound");
@@ -8,9 +9,7 @@ bgImage.src = "assets/bg.png";
 const buttonImage = new Image();
 buttonImage.src = "assets/button.png";
 
-// レベル情報の取得（localStorage）
 let level = parseInt(localStorage.getItem("level") || "1");
-
 let buttonX = 0;
 let buttonY = 0;
 let buttonSize = 0;
@@ -29,17 +28,23 @@ function drawScene() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-   // レベル表示（やや下に、大きめに）
-  ctx.font = "bold 48px sans-serif"; // フォントサイズを大きく
-  ctx.fillStyle = "#FFFFFF";
+  // アプリ名
+  ctx.font = "bold 28px sans-serif";
+  ctx.fillStyle = "#FFFF66";
   ctx.textAlign = "center";
-  ctx.fillText(`レベル ${level}`, canvas.width / 2, 120); // 高さを60 → 120に変更
+  ctx.fillText("自分がレベルアップしたときに押すボタン", canvas.width / 2, 40);
 
-  // ボタン描画
+  // レベル表示
+  ctx.font = "bold 48px sans-serif";
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillText(`レベル ${level}`, canvas.width / 2, 120);
+
+  // ボタン位置とサイズ
   buttonSize = Math.min(canvas.width, canvas.height) / 3;
   buttonX = canvas.width / 2 - buttonSize / 2;
   buttonY = canvas.height / 2 - buttonSize / 2;
 
+  // 発光エフェクト
   if (glowAlpha > 0) {
     ctx.save();
     ctx.globalAlpha = glowAlpha;
@@ -65,15 +70,12 @@ canvas.addEventListener("click", (e) => {
   const distance = Math.sqrt(dx * dx + dy * dy);
 
   if (distance <= buttonSize / 2) {
-    // 音再生
     sound.currentTime = 0;
     sound.play();
 
-    // レベルアップ処理
     level++;
     localStorage.setItem("level", level);
 
-    // 光るエフェクト
     glowAlpha = 0.8;
     drawScene();
     if (glowTimeout) clearTimeout(glowTimeout);
