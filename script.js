@@ -8,10 +8,13 @@ bgImage.src = "assets/bg.png";
 const buttonImage = new Image();
 buttonImage.src = "assets/button.png";
 
+// レベル情報の取得（localStorage）
+let level = parseInt(localStorage.getItem("level") || "1");
+
 let buttonX = 0;
 let buttonY = 0;
 let buttonSize = 0;
-let glowAlpha = 0; // 発光の透明度
+let glowAlpha = 0;
 let glowTimeout = null;
 
 function resizeCanvas() {
@@ -24,16 +27,19 @@ function drawScene() {
   if (!bgImage.complete || !buttonImage.complete) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // 背景
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // ボタンサイズ・位置
+  // レベル表示
+  ctx.font = "bold 32px sans-serif";
+  ctx.fillStyle = "#FFFFFF";
+  ctx.textAlign = "center";
+  ctx.fillText(`レベル ${level}`, canvas.width / 2, 60);
+
+  // ボタン描画
   buttonSize = Math.min(canvas.width, canvas.height) / 3;
   buttonX = canvas.width / 2 - buttonSize / 2;
   buttonY = canvas.height / 2 - buttonSize / 2;
 
-  // 発光エフェクト（外側に白い円を描く）
   if (glowAlpha > 0) {
     ctx.save();
     ctx.globalAlpha = glowAlpha;
@@ -44,7 +50,6 @@ function drawScene() {
     ctx.restore();
   }
 
-  // ボタン画像
   ctx.drawImage(buttonImage, buttonX, buttonY, buttonSize, buttonSize);
 }
 
@@ -60,17 +65,22 @@ canvas.addEventListener("click", (e) => {
   const distance = Math.sqrt(dx * dx + dy * dy);
 
   if (distance <= buttonSize / 2) {
+    // 音再生
     sound.currentTime = 0;
     sound.play();
 
-    // 発光エフェクト表示
+    // レベルアップ処理
+    level++;
+    localStorage.setItem("level", level);
+
+    // 光るエフェクト
     glowAlpha = 0.8;
     drawScene();
     if (glowTimeout) clearTimeout(glowTimeout);
     glowTimeout = setTimeout(() => {
       glowAlpha = 0;
       drawScene();
-    }, 200); // 0.2秒後に消す
+    }, 200);
   }
 });
 
