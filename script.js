@@ -9,12 +9,9 @@ const buttonImage = new Image();
 buttonImage.src = "assets/button.png";
 
 const titleImage = new Image();
-titleImage.src = "assets/title.png"; // アプリ名画像
+titleImage.src = "assets/title.png";
 
 let level = parseInt(localStorage.getItem("level") || "1");
-let buttonX = 0;
-let buttonY = 0;
-let buttonSize = 0;
 let glowAlpha = 0;
 let glowTimeout = null;
 
@@ -30,37 +27,47 @@ function drawScene() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // タイトル画像を最上部に重ねて表示
-  const titleWidth = Math.min(canvas.width * 0.8, 600);
-  const titleHeight = titleWidth * 0.25;
+  // タイトル画像（比率を維持して中央上部）
+  const titleMaxWidth = canvas.width * 0.8;
+  const titleRatio = titleImage.width / titleImage.height;
+  const titleWidth = Math.min(titleMaxWidth, 600);
+  const titleHeight = titleWidth / titleRatio;
   const titleX = (canvas.width - titleWidth) / 2;
   const titleY = 20;
   ctx.drawImage(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-  // レベル表示（画像の下に大きく）
+  // レベル表示（タイトル画像の下）
   ctx.font = "bold 48px sans-serif";
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
-  ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 50);
+  ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 60);
 
-  // ボタン位置とサイズ
-  buttonSize = Math.min(canvas.width, canvas.height) / 3;
-  buttonX = canvas.width / 2 - buttonSize / 2;
-  buttonY = canvas.height / 2 - buttonSize / 2;
+  // ボタン描画（中央、比率維持）
+  const baseSize = Math.min(canvas.width, canvas.height) / 3;
+  const buttonRatio = buttonImage.width / buttonImage.height;
+  let btnW = baseSize;
+  let btnH = baseSize;
+  if (buttonRatio > 1) {
+    btnH = baseSize / buttonRatio;
+  } else {
+    btnW = baseSize * buttonRatio;
+  }
+
+  const buttonX = canvas.width / 2 - btnW / 2;
+  const buttonY = canvas.height / 2 - btnH / 2;
 
   // 発光エフェクト
   if (glowAlpha > 0) {
     ctx.save();
     ctx.globalAlpha = glowAlpha;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, buttonSize / 1.5, 0, 2 * Math.PI);
+    ctx.arc(canvas.width / 2, canvas.height / 2, baseSize / 1.5, 0, 2 * Math.PI);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.restore();
   }
 
-  // ボタン画像
-  ctx.drawImage(buttonImage, buttonX, buttonY, buttonSize, buttonSize);
+  ctx.drawImage(buttonImage, buttonX, buttonY, btnW, btnH);
 }
 
 canvas.addEventListener("click", (e) => {
@@ -68,13 +75,14 @@ canvas.addEventListener("click", (e) => {
   const mx = e.clientX - rect.left;
   const my = e.clientY - rect.top;
 
-  const cx = buttonX + buttonSize / 2;
-  const cy = buttonY + buttonSize / 2;
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
   const dx = mx - cx;
   const dy = my - cy;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  if (distance <= buttonSize / 2) {
+  const radius = Math.min(canvas.width, canvas.height) / 6;
+  if (distance <= radius) {
     sound.currentTime = 0;
     sound.play();
 
@@ -91,8 +99,10 @@ canvas.addEventListener("click", (e) => {
   }
 });
 
-bgImage.onload = buttonImage.onload = titleImage.onload = () => {
-  resizeCanvas();
+titleImage.onload = () => {
+  bgImage.onload = buttonImage.onload = () => {
+    resizeCanvas();
+  };
 };
 
 window.addEventListener("resize", resizeCanvas);
