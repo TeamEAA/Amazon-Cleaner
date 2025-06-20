@@ -18,24 +18,21 @@ body, html {
   text-align: center;
 }
 
-/* タイトル画像：最大幅600px、画面幅の90%まで */
+/* ✅ スマホ基準のサイズ設定 */
 .title {
   width: 90vw;
-  max-width: 600px;
   height: auto;
   margin-bottom: 2vh;
 }
 
-/* レベル表示：画面サイズに応じてスケーリング */
 .level {
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: 2.5em;
   color: white;
-  margin: 2vh 0;
+  margin-bottom: 4vh;
 }
 
-/* ボタン画像：画面幅に応じて大きく、最大200pxまで */
 .button {
-  width: clamp(100px, 20vw, 200px);
+  width: 200px;
   height: auto;
   transition: transform 0.1s ease;
   cursor: pointer;
@@ -43,4 +40,20 @@ body, html {
 
 .button:active {
   transform: scale(1.1);
+}
+
+/* ✅ PCだけ調整する：768px以上の画面に限定 */
+@media screen and (min-width: 768px) {
+  .title {
+    max-width: 600px;
+  }
+
+  .button {
+    max-width: 200px;
+    width: 15vw;
+  }
+
+  .level {
+    font-size: 2em;
+  }
 }
