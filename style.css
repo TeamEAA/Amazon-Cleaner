@@ -13,3 +13,10 @@ canvas {
   height: 100vh;
   display: block;
 }
+#titleImage {
+  display: block;
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto 10px;
+  image-rendering: pixelated;
+}
