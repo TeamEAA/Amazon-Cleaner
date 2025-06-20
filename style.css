@@ -11,26 +11,31 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-evenly;
   min-height: 100vh;
   padding: 5vh 0;
   box-sizing: border-box;
-  justify-content: flex-start;
+  text-align: center;
 }
 
+/* タイトル画像：最大幅600px、画面幅の90%まで */
 .title {
-  max-width: 90vw;
+  width: 90vw;
+  max-width: 600px;
   height: auto;
   margin-bottom: 2vh;
 }
 
+/* レベル表示：画面サイズに応じてスケーリング */
 .level {
-  font-size: clamp(1.5rem, 2.5vw, 3rem);
+  font-size: clamp(1.5rem, 4vw, 3rem);
   color: white;
-  margin-bottom: 4vh;
+  margin: 2vh 0;
 }
 
+/* ボタン画像：画面幅に応じて大きく、最大200pxまで */
 .button {
-  width: clamp(120px, 20vw, 200px);
+  width: clamp(100px, 20vw, 200px);
   height: auto;
   transition: transform 0.1s ease;
   cursor: pointer;
