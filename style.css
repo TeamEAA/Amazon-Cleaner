@@ -11,25 +11,26 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
+  min-height: 100vh;
+  padding: 5vh 0;
+  box-sizing: border-box;
+  justify-content: flex-start;
 }
 
 .title {
-  max-width: 80%;
+  max-width: 90vw;
   height: auto;
-  margin-bottom: 20px;
+  margin-bottom: 2vh;
 }
 
 .level {
-  font-size: 2.5em;
+  font-size: clamp(1.5rem, 2.5vw, 3rem);
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: 4vh;
 }
 
 .button {
-  width: 200px;
+  width: clamp(120px, 20vw, 200px);
   height: auto;
   transition: transform 0.1s ease;
   cursor: pointer;
