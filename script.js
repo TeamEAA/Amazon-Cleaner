@@ -15,6 +15,7 @@ let level = parseInt(localStorage.getItem("level") || "1");
 let glowAlpha = 0;
 let glowTimeout = null;
 
+// ボタン描画用座標
 let buttonX = 0;
 let buttonY = 0;
 let buttonW = 0;
@@ -32,23 +33,28 @@ function drawScene() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // タイトル画像（縦横比保持）
-  const titleMaxWidth = canvas.width * 0.8;
-  const titleRatio = titleImage.width / titleImage.height;
+  const screenW = canvas.width;
+  const screenH = canvas.height;
+
+  // === タイトル画像 ===
+  const titleMaxWidth = screenW * 0.8;
+  const titleAspect = titleImage.width / titleImage.height;
   const titleWidth = Math.min(titleMaxWidth, 600);
-  const titleHeight = titleWidth / titleRatio;
-  const titleX = (canvas.width - titleWidth) / 2;
+  const titleHeight = titleWidth / titleAspect;
+  const titleX = (screenW - titleWidth) / 2;
   const titleY = 20;
   ctx.drawImage(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-  // レベル表示
-  ctx.font = "bold 48px sans-serif";
+  // === レベル表示 ===
+  const levelFontSize = Math.floor(screenH * 0.05); // 5%の高さ
+  ctx.font = `bold ${levelFontSize}px sans-serif`;
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
-  ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 60);
+  const levelY = titleY + titleHeight + 40;
+  ctx.fillText(`レベル ${level}`, screenW / 2, levelY);
 
-  // ボタン画像（縦横比保持）
-  const buttonMaxSize = Math.min(canvas.width, canvas.height) / 2;
+  // === ボタン描画 ===
+  const buttonMaxSize = Math.min(screenW, screenH) / 3;
   const buttonRatio = buttonImage.width / buttonImage.height;
   if (buttonRatio > 1) {
     buttonW = buttonMaxSize;
@@ -57,15 +63,17 @@ function drawScene() {
     buttonH = buttonMaxSize;
     buttonW = buttonH * buttonRatio;
   }
-  buttonX = (canvas.width - buttonW) / 2;
-  buttonY = (canvas.height - buttonH) / 2;
+
+  // ボタンは画面中央よりやや下に
+  buttonX = (screenW - buttonW) / 2;
+  buttonY = levelY + 40; // レベル表示の下に 40px 空ける
 
   // 発光エフェクト
   if (glowAlpha > 0) {
     ctx.save();
     ctx.globalAlpha = glowAlpha;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(buttonW, buttonH) / 1.5, 0, 2 * Math.PI);
+    ctx.arc(screenW / 2, buttonY + buttonH / 2, Math.min(buttonW, buttonH) / 1.5, 0, 2 * Math.PI);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.restore();
