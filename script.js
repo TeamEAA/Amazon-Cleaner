@@ -29,11 +29,11 @@ function drawScene() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // レベル表示
-  ctx.font = "bold 32px sans-serif";
+   // レベル表示（やや下に、大きめに）
+  ctx.font = "bold 48px sans-serif"; // フォントサイズを大きく
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
-  ctx.fillText(`レベル ${level}`, canvas.width / 2, 60);
+  ctx.fillText(`レベル ${level}`, canvas.width / 2, 120); // 高さを60 → 120に変更
 
   // ボタン描画
   buttonSize = Math.min(canvas.width, canvas.height) / 3;
