@@ -1,4 +1,3 @@
-// script.js
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const sound = document.getElementById("levelupSound");
@@ -8,6 +7,9 @@ bgImage.src = "assets/bg.png";
 
 const buttonImage = new Image();
 buttonImage.src = "assets/button.png";
+
+const titleImage = new Image();
+titleImage.src = "assets/title.png"; // アプリ名画像
 
 let level = parseInt(localStorage.getItem("level") || "1");
 let buttonX = 0;
@@ -23,21 +25,23 @@ function resizeCanvas() {
 }
 
 function drawScene() {
-  if (!bgImage.complete || !buttonImage.complete) return;
+  if (!bgImage.complete || !buttonImage.complete || !titleImage.complete) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // アプリ名
-  ctx.font = "bold 28px sans-serif";
-  ctx.fillStyle = "#FFFF66";
-  ctx.textAlign = "center";
-  ctx.fillText("自分がレベルアップしたときに押すボタン", canvas.width / 2, 40);
+  // タイトル画像を最上部に重ねて表示
+  const titleWidth = Math.min(canvas.width * 0.8, 600);
+  const titleHeight = titleWidth * 0.25;
+  const titleX = (canvas.width - titleWidth) / 2;
+  const titleY = 20;
+  ctx.drawImage(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-  // レベル表示
+  // レベル表示（画像の下に大きく）
   ctx.font = "bold 48px sans-serif";
   ctx.fillStyle = "#FFFFFF";
-  ctx.fillText(`レベル ${level}`, canvas.width / 2, 120);
+  ctx.textAlign = "center";
+  ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 50);
 
   // ボタン位置とサイズ
   buttonSize = Math.min(canvas.width, canvas.height) / 3;
@@ -55,6 +59,7 @@ function drawScene() {
     ctx.restore();
   }
 
+  // ボタン画像
   ctx.drawImage(buttonImage, buttonX, buttonY, buttonSize, buttonSize);
 }
 
@@ -86,7 +91,7 @@ canvas.addEventListener("click", (e) => {
   }
 });
 
-bgImage.onload = buttonImage.onload = () => {
+bgImage.onload = buttonImage.onload = titleImage.onload = () => {
   resizeCanvas();
 };
 
