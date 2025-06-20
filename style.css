@@ -1,13 +1,40 @@
 body, html {
   margin: 0;
   padding: 0;
-  background: black;
+  background: url("assets/bg.png") no-repeat center center fixed;
+  background-size: cover;
   height: 100%;
-  overflow: hidden;
+  font-family: sans-serif;
 }
 
-canvas {
-  display: block;
-  width: 100vw;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
+  text-align: center;
+}
+
+.title {
+  max-width: 80%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.level {
+  font-size: 2.5em;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.button {
+  width: 200px;
+  height: auto;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+}
+
+.button:active {
+  transform: scale(1.1);
 }
