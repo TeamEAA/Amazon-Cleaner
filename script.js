@@ -15,7 +15,6 @@ let level = parseInt(localStorage.getItem("level") || "1");
 let glowAlpha = 0;
 let glowTimeout = null;
 
-// ボタンの描画位置とサイズ（判定に使う）
 let buttonX = 0;
 let buttonY = 0;
 let buttonW = 0;
@@ -31,11 +30,9 @@ function drawScene() {
   if (!bgImage.complete || !buttonImage.complete || !titleImage.complete) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // 背景全体表示
   ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-  // タイトル画像（比率維持）
+  // タイトル画像（縦横比保持）
   const titleMaxWidth = canvas.width * 0.8;
   const titleRatio = titleImage.width / titleImage.height;
   const titleWidth = Math.min(titleMaxWidth, 600);
@@ -44,13 +41,13 @@ function drawScene() {
   const titleY = 20;
   ctx.drawImage(titleImage, titleX, titleY, titleWidth, titleHeight);
 
-  // レベル表示（タイトルの下）
+  // レベル表示
   ctx.font = "bold 48px sans-serif";
   ctx.fillStyle = "#FFFFFF";
   ctx.textAlign = "center";
   ctx.fillText(`レベル ${level}`, canvas.width / 2, titleY + titleHeight + 60);
 
-  // ボタン画像（比率維持して中央）
+  // ボタン画像（縦横比保持）
   const buttonMaxSize = Math.min(canvas.width, canvas.height) / 2;
   const buttonRatio = buttonImage.width / buttonImage.height;
   if (buttonRatio > 1) {
@@ -60,7 +57,6 @@ function drawScene() {
     buttonH = buttonMaxSize;
     buttonW = buttonH * buttonRatio;
   }
-
   buttonX = (canvas.width - buttonW) / 2;
   buttonY = (canvas.height - buttonH) / 2;
 
